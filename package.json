@@ -1,0 +1,19 @@
+{
+  "name": "home-automation-api",
+  "version": "1.0.0",
+  "description": "Home automation API server - HTTP/SSE/frontend (pnpm workspace)",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "dev:backend": "pnpm --filter @home-automation/backend dev",
+    "dev:frontend": "pnpm --filter @home-automation/frontend dev",
+    "build:frontend": "pnpm --filter @home-automation/frontend build",
+    "test": "pnpm -r test",
+    "test:backend": "pnpm --filter @home-automation/backend test",
+    "test:frontend": "pnpm --filter @home-automation/frontend test",
+    "restart:remote": "ssh pi@192.168.1.50 \"sudo systemctl restart home-automation-api.service\""
+  }
+}
