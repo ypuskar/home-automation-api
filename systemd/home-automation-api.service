@@ -1,0 +1,32 @@
+[Unit]
+Description=Home Automation API Server (Fastify HTTPS + SSE + frontend)
+After=network.target postgresql.service
+
+[Service]
+Type=simple
+User=pi
+WorkingDirectory=/home/pi/projects/home-automation-api/packages/backend
+
+# Production: run compiled JavaScript (build with: pnpm --filter backend build)
+ExecStart=/usr/local/bin/node --env-file=.env dist/index.js
+
+# Development alternative: run TypeScript directly via tsx (uncomment for dev)
+# ExecStart=/usr/local/bin/node /home/pi/projects/home-automation-api/node_modules/.pnpm/tsx@4.23.12/node_modules/tsx/dist/cli.mjs --env-file=.env src/index.ts
+
+Restart=always
+RestartSec=10
+
+# Graceful shutdown via SIGTERM (index.ts handles cleanup: poller, SSE, DB, Fastify)
+KillSignal=SIGTERM
+TimeoutStopSec=15
+
+# Memory limit — triggers OOMKill if exceeded (app self-monitors at 512MB)
+MemoryMax=700M
+
+# Environment
+Environment=NODE_ENV=production
+Environment=PORT=4000
+Environment=PATH=/usr/local/bin:/usr/bin:/bin
+
+[Install]
+WantedBy=multi-user.target
