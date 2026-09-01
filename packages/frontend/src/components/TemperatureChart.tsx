@@ -50,19 +50,43 @@ function formatTimestamp(value: string | Date): string {
   });
 }
 
-/** Determine responsive data point limit based on window width */
-function useDataPointLimit(): number {
-  const [limit, setLimit] = useState(() => (window.innerWidth < 800 ? 10 : 100));
+/** ~1 rendered point per this many px of width — keeps the line legible without oversampling. */
+const PX_PER_POINT = 12;
+/** Reference density (points/day) — matches the original fixed desktop default (100 points / 10 days). */
+const POINTS_PER_DAY = 10;
+const MIN_POINTS = 15;
+/** Caps around MUI Container maxWidth="lg"'s effective content width — window.innerWidth keeps
+ *  growing past that on wide monitors, but the chart's actual rendered width does not. */
+const MAX_POINTS = 100;
+
+/**
+ * Determine the responsive chart window from viewport width: how many days
+ * of history to request from the API, and how many points to sample for
+ * display. pointLimit scales continuously with width (not a two-bucket
+ * switch), and dayLimit is derived to keep points-per-day roughly constant
+ * across all widths — a narrow screen shows a shorter, equally-dense recent
+ * window instead of the same wide span squeezed into far fewer points
+ * (which buried the most recent, densely-sampled readings under a handful
+ * of samples spread mostly across older, sparser history).
+ */
+function useChartWindow(): { dayLimit: number; pointLimit: number } {
+  const compute = () => {
+    const pointLimit = Math.min(
+      MAX_POINTS,
+      Math.max(MIN_POINTS, Math.round(window.innerWidth / PX_PER_POINT)),
+    );
+    const dayLimit = Math.max(1, Math.round(pointLimit / POINTS_PER_DAY));
+    return { dayLimit, pointLimit };
+  };
+  const [chartWindow, setChartWindow] = useState(compute);
 
   useEffect(() => {
-    const handleResize = () => {
-      setLimit(window.innerWidth < 800 ? 10 : 100);
-    };
+    const handleResize = () => setChartWindow(compute());
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  return limit;
+  return chartWindow;
 }
 
 interface TemperatureChartProps {
@@ -77,11 +101,18 @@ interface TemperatureChartProps {
  */
 export function TemperatureChart({ hiddenRooms }: TemperatureChartProps) {
   const [page, setPage] = useState(0);
-  const pointLimit = useDataPointLimit();
+  const { dayLimit, pointLimit } = useChartWindow();
+
+  // Reset to page 0 when the day-range changes (e.g. resize) — page N means
+  // a different date range under a different dayLimit, so keeping it would
+  // silently jump the visible window.
+  useEffect(() => {
+    setPage(0);
+  }, [dayLimit]);
 
   const { data, loading, error } = useApi<HistoryRecord[]>('/api/temps', {
     page,
-    limit: 10,
+    limit: dayLimit,
   });
 
   // Downsample data to pointLimit, sorted chronologically (oldest first for chart)
