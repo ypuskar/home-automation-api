@@ -1,0 +1,37 @@
+# Auto-detect text files and normalize their line endings to LF in the repo.
+* text=auto eol=lf
+
+# Explicit source/text types (belt-and-suspenders alongside the auto rule above)
+*.ts    text eol=lf
+*.tsx   text eol=lf
+*.js    text eol=lf
+*.mjs   text eol=lf
+*.cjs   text eol=lf
+*.json  text eol=lf
+*.md    text eol=lf
+*.sql   text eol=lf
+*.sh    text eol=lf
+*.yml   text eol=lf
+*.yaml  text eol=lf
+*.html  text eol=lf
+*.css   text eol=lf
+*.service text eol=lf
+
+# Windows-only scripts: keep CRLF, that's what Windows/PowerShell expects
+*.ps1 text eol=crlf
+*.bat text eol=crlf
+*.cmd text eol=crlf
+
+# Generated lockfiles: don't diff or merge them line-by-line
+package-lock.json -diff
+pnpm-lock.yaml -diff
+
+# Binaries — never touch line endings
+*.png  binary
+*.jpg  binary
+*.jpeg binary
+*.gif  binary
+*.ico  binary
+*.pdf  binary
+*.woff  binary
+*.woff2 binary
