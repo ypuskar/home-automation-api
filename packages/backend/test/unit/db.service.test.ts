@@ -326,30 +326,44 @@ describe('BackendDBService', () => {
       await service.getCurrentState();
 
       const queryText = mockPoolInstance.query.mock.calls[0][0];
-      expect(queryText).toContain('SELECT sensor_id, temp, heat, heat_start, heat_end, last_updated');
+      expect(queryText).toContain('SELECT sensor_id, temp, humidity, heat, heat_start, heat_end, last_updated');
       expect(queryText).toContain('FROM current_state');
     });
 
     it('maps DB column names to CurrentStateRecord interface', async () => {
       const now = new Date('2024-01-15T12:00:00Z');
       const mockRows = [
-        { sensor_id: '28-0517c3a351ff', temp: 6.5, heat: true, heat_start: 1700000000000, heat_end: null, last_updated: now },
-        { sensor_id: '28-0417c28ee3ff', temp: -2.1, heat: false, heat_start: null, heat_end: null, last_updated: now },
+        { sensor_id: '28-0517c3a351ff', temp: 6.5, humidity: null, heat: true, heat_start: 1700000000000, heat_end: null, last_updated: now },
+        { sensor_id: '28-0417c28ee3ff', temp: -2.1, humidity: null, heat: false, heat_start: null, heat_end: null, last_updated: now },
       ];
       mockPoolInstance.query.mockResolvedValueOnce({ rows: mockRows });
 
       const result = await service.getCurrentState();
 
       expect(result).toEqual([
-        { sensorId: '28-0517c3a351ff', temp: 6.5, heat: true, heatStart: 1700000000000, heatEnd: null, lastUpdated: now },
-        { sensorId: '28-0417c28ee3ff', temp: -2.1, heat: false, heatStart: null, heatEnd: null, lastUpdated: now },
+        { sensorId: '28-0517c3a351ff', temp: 6.5, humidity: null, heat: true, heatStart: 1700000000000, heatEnd: null, lastUpdated: now },
+        { sensorId: '28-0417c28ee3ff', temp: -2.1, humidity: null, heat: false, heatStart: null, heatEnd: null, lastUpdated: now },
+      ]);
+    });
+
+    it('maps humidity through for sensors that report it (e.g. DHT22)', async () => {
+      const now = new Date('2024-01-15T12:00:00Z');
+      const mockRows = [
+        { sensor_id: 'dht22-kasvuhoone', temp: 22.4, humidity: 61.2, heat: false, heat_start: null, heat_end: null, last_updated: now },
+      ];
+      mockPoolInstance.query.mockResolvedValueOnce({ rows: mockRows });
+
+      const result = await service.getCurrentState();
+
+      expect(result).toEqual([
+        { sensorId: 'dht22-kasvuhoone', temp: 22.4, humidity: 61.2, heat: false, heatStart: null, heatEnd: null, lastUpdated: now },
       ]);
     });
 
     it('converts bigint heat_start/heat_end to Number', async () => {
       const now = new Date();
       const mockRows = [
-        { sensor_id: '28-0517c3a351ff', temp: 7.0, heat: true, heat_start: BigInt(1700000000000), heat_end: BigInt(1700000120000), last_updated: now },
+        { sensor_id: '28-0517c3a351ff', temp: 7.0, humidity: null, heat: true, heat_start: BigInt(1700000000000), heat_end: BigInt(1700000120000), last_updated: now },
       ];
       mockPoolInstance.query.mockResolvedValueOnce({ rows: mockRows });
 

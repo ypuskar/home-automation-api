@@ -147,7 +147,7 @@ export class BackendDBService implements IBackendDBService {
     }
 
     const query = `
-      SELECT sensor_id, temp, heat, heat_start, heat_end, last_updated
+      SELECT sensor_id, temp, humidity, heat, heat_start, heat_end, last_updated
       FROM current_state
     `;
 
@@ -156,6 +156,7 @@ export class BackendDBService implements IBackendDBService {
       return result.rows.map((row: any) => ({
         sensorId: row.sensor_id,
         temp: row.temp,
+        humidity: row.humidity ?? null,
         heat: row.heat,
         heatStart: row.heat_start !== null ? Number(row.heat_start) : null,
         heatEnd: row.heat_end !== null ? Number(row.heat_end) : null,

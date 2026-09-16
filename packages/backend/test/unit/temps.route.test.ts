@@ -27,6 +27,10 @@ describe('Temps Route (GET /api/temps)', () => {
       Temp_Eesruum: 7.2,
       Kyte_eesruum: false,
       Temp_valjas: -2.3,
+      Temp_kasvuhoone: 22.4,
+      Niiskus_kasvuhoone: 61.2,
+      Temp_elutuba: 21.3,
+      Niiskus_elutuba: 48.7,
       TimeStamp: new Date('2024-01-15T12:00:00.000Z'),
     },
     {
@@ -36,6 +40,10 @@ describe('Temps Route (GET /api/temps)', () => {
       Temp_Eesruum: 7.5,
       Kyte_eesruum: false,
       Temp_valjas: -1.8,
+      Temp_kasvuhoone: null,
+      Niiskus_kasvuhoone: null,
+      Temp_elutuba: null,
+      Niiskus_elutuba: null,
       TimeStamp: new Date('2024-01-15T11:00:00.000Z'),
     },
   ];
@@ -61,6 +69,26 @@ describe('Temps Route (GET /api/temps)', () => {
     const body = response.json();
     expect(body).toHaveLength(2);
     expect(body[0].Temp_garaaz).toBe(6.5);
+  });
+
+  it('includes Temp_kasvuhoone and Niiskus_kasvuhoone (null when not reported)', async () => {
+    const response = await app.inject({ method: 'GET', url: '/api/temps' });
+
+    const body = response.json();
+    expect(body[0].Temp_kasvuhoone).toBe(22.4);
+    expect(body[0].Niiskus_kasvuhoone).toBe(61.2);
+    expect(body[1].Temp_kasvuhoone).toBeNull();
+    expect(body[1].Niiskus_kasvuhoone).toBeNull();
+  });
+
+  it('includes Temp_elutuba and Niiskus_elutuba (null when not reported)', async () => {
+    const response = await app.inject({ method: 'GET', url: '/api/temps' });
+
+    const body = response.json();
+    expect(body[0].Temp_elutuba).toBe(21.3);
+    expect(body[0].Niiskus_elutuba).toBe(48.7);
+    expect(body[1].Temp_elutuba).toBeNull();
+    expect(body[1].Niiskus_elutuba).toBeNull();
   });
 
   it('uses default pagination (page=0, limit=10) when no params given', async () => {

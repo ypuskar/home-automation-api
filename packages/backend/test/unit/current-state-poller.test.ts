@@ -32,6 +32,7 @@ function createMockDbService(records: CurrentStateRecord[] = []): IBackendDBServ
 function makeRecord(overrides: Partial<CurrentStateRecord> & { sensorId: string }): CurrentStateRecord {
   return {
     temp: 20.0,
+    humidity: null,
     heat: false,
     heatStart: null,
     heatEnd: null,
@@ -184,6 +185,40 @@ describe('CurrentStatePoller', () => {
       // No HeatStart/HeatEnd on non-heated rooms
       expect(payload['28-0417c28ee3ff']).not.toHaveProperty('HeatStart');
       expect(payload['28-0417c28ee3ff']).not.toHaveProperty('HeatEnd');
+    });
+
+    it('includes humidity for sensors that report it (e.g. DHT22)', async () => {
+      const now = new Date();
+      vi.setSystemTime(now);
+
+      const records: CurrentStateRecord[] = [
+        makeRecord({ sensorId: 'dht22-kasvuhoone', temp: 22.4, humidity: 61.2, heat: false, lastUpdated: now }),
+      ];
+      dbService = createMockDbService(records);
+      poller = new CurrentStatePoller(dbService, STALE_AFTER_MS, logger);
+
+      poller.start(2000);
+      await vi.advanceTimersByTimeAsync(0);
+
+      const payload = poller.getLatest();
+      expect(payload['dht22-kasvuhoone']).toEqual({ temp: 22.4, humidity: 61.2, heat: false });
+    });
+
+    it('omits humidity for sensors that do not report it', async () => {
+      const now = new Date();
+      vi.setSystemTime(now);
+
+      const records: CurrentStateRecord[] = [
+        makeRecord({ sensorId: '28-0417c28ee3ff', temp: -2.1, humidity: null, heat: false, lastUpdated: now }),
+      ];
+      dbService = createMockDbService(records);
+      poller = new CurrentStatePoller(dbService, STALE_AFTER_MS, logger);
+
+      poller.start(2000);
+      await vi.advanceTimersByTimeAsync(0);
+
+      const payload = poller.getLatest();
+      expect(payload['28-0417c28ee3ff']).not.toHaveProperty('humidity');
     });
 
     it('includes all 4 sensors in the payload', async () => {

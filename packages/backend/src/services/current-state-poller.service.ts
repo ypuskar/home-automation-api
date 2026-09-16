@@ -134,6 +134,10 @@ export class CurrentStatePoller implements ICurrentStatePoller {
         heat: record.heat,
       };
 
+      if (record.humidity !== null) {
+        roomState.humidity = record.humidity;
+      }
+
       if (isHeated) {
         roomState.HeatStart = record.heatStart ?? 0;
         roomState.HeatEnd = record.heatEnd ?? 0;

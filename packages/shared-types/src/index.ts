@@ -6,16 +6,22 @@ export interface SensorConfig {
   name: string;
   gpioPin?: number;
   hasHeating: boolean;
+  /** 'onewire' (default) = read locally on the hardware-agent host; 'remote' = pushed via HTTP ingest (e.g. ESP32) */
+  source?: 'onewire' | 'remote';
+  /** true if this sensor also reports relative humidity (e.g. DHT22) */
+  hasHumidity?: boolean;
 }
 
 export interface SensorReading {
   sensorId: string;
   temperature: number;
+  humidity?: number;
   timestamp: number;
 }
 
 export interface RoomState {
   temp: number;
+  humidity?: number;
   heat: boolean;
   HeatStart?: number;
   HeatEnd?: number;
@@ -46,6 +52,10 @@ export interface HistoryRecord {
   Temp_Eesruum: number;
   Kyte_eesruum: boolean;
   Temp_valjas: number;
+  Temp_kasvuhoone: number | null;
+  Niiskus_kasvuhoone: number | null;
+  Temp_elutuba: number | null;
+  Niiskus_elutuba: number | null;
   TimeStamp: Date;
 }
 
@@ -57,6 +67,7 @@ export interface PaginationParams {
 export interface CurrentStateRecord {
   sensorId: string;
   temp: number;
+  humidity: number | null;
   heat: boolean;
   heatStart: number | null;
   heatEnd: number | null;

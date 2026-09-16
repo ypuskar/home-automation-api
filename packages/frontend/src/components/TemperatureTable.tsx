@@ -19,6 +19,8 @@ const SENSOR_ORDER = [
   '28-0417c2a85dff', // Eesruum
   '28-0417c28ee3ff', // Õues
   '28-0417c2da95ff', // Leiliruum
+  'dht22-kasvuhoone', // Kasvuhoone
+  'dht22-elutuba', // Elutuba
 ];
 
 /** Chart line colors per sensor — must match TemperatureChart */
@@ -27,6 +29,8 @@ const ROOM_COLORS: Record<string, string> = {
   '28-0417c2a85dff': '#1565c0', // Eesruum — dark blue
   '28-0417c28ee3ff': '#d4a76a', // Õues — sand
   '28-0417c2da95ff': '#00838f', // Leiliruum — dark cyan
+  'dht22-kasvuhoone': '#2e7d32', // Kasvuhoone — green
+  'dht22-elutuba': '#ef6c00', // Elutuba — orange
 };
 
 interface TemperatureTableProps {
@@ -65,6 +69,7 @@ export function TemperatureTable({ data, hiddenRooms, onToggleRoom }: Temperatur
           <TableRow>
             <TableCell>Ruum</TableCell>
             <TableCell align="right">Temp °C</TableCell>
+            <TableCell align="right">Niiskus %</TableCell>
             <TableCell>Küte</TableCell>
             <TableCell>Kütetsükkel</TableCell>
           </TableRow>
@@ -100,6 +105,9 @@ export function TemperatureTable({ data, hiddenRooms, onToggleRoom }: Temperatur
                 </TableCell>
                 <TableCell align="right">
                   {room.temp.toFixed(1)}
+                </TableCell>
+                <TableCell align="right">
+                  {room.humidity !== undefined ? room.humidity.toFixed(0) : '—'}
                 </TableCell>
                 <TableCell>
                   {room.heat ? '🔥 ON' : 'OFF'}

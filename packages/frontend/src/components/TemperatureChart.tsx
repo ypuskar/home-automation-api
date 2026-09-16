@@ -15,10 +15,12 @@ import type { HistoryRecord } from '@home-automation/shared-types';
 
 /** Chart line colors per sensor/room */
 const LINE_COLORS: Record<string, string> = {
-  Temp_garaaz: '#64b5f6',    // Garaaž — light blue
-  Temp_Eesruum: '#1565c0',   // Eesruum — dark blue
-  Temp_valjas: '#d4a76a',    // Õues — sand
-  Temp_Leiliruum: '#00838f', // Leiliruum — dark cyan
+  Temp_garaaz: '#64b5f6',      // Garaaž — light blue
+  Temp_Eesruum: '#1565c0',     // Eesruum — dark blue
+  Temp_valjas: '#d4a76a',      // Õues — sand
+  Temp_Leiliruum: '#00838f',   // Leiliruum — dark cyan
+  Temp_kasvuhoone: '#2e7d32',  // Kasvuhoone — green
+  Temp_elutuba: '#ef6c00',     // Elutuba — orange
 };
 
 /** Map HistoryRecord temp field names → sensor IDs for legend toggle */
@@ -27,10 +29,12 @@ const FIELD_TO_SENSOR: Record<string, string> = {
   Temp_Eesruum: '28-0417c2a85dff',
   Temp_valjas: '28-0417c28ee3ff',
   Temp_Leiliruum: '28-0417c2da95ff',
+  Temp_kasvuhoone: 'dht22-kasvuhoone',
+  Temp_elutuba: 'dht22-elutuba',
 };
 
 /** Temp field keys from HistoryRecord */
-const TEMP_FIELDS = ['Temp_garaaz', 'Temp_Eesruum', 'Temp_valjas', 'Temp_Leiliruum'] as const;
+const TEMP_FIELDS = ['Temp_garaaz', 'Temp_Eesruum', 'Temp_valjas', 'Temp_Leiliruum', 'Temp_kasvuhoone', 'Temp_elutuba'] as const;
 
 /** Get display name for a temp field */
 function fieldDisplayName(field: string): string {
