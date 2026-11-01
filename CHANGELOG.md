@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.2 (2026-11-01)
+
+### Muudetud
+- Kasvuhoone DHT22 andur viidi talveks 2. korruse magamistuppa: kuvatav nimi `dht22-kasvuhoone` → „Magamistuba" (`ROOM_NAMES`). Anduri ID, püsivara ja DB tulbad (`Temp_kasvuhoone`, `Niiskus_kasvuhoone`) jäävad samaks; tulba kommentaar märgib, et alates 2026-11-01 on see magamistuba (varasem ajalugu = kasvuhoone). Kevadel nime tagasi muutmine.
+
 ## 1.0.1 (2026-09-01)
 
 ### Parandatud

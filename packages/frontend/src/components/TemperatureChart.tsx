@@ -19,7 +19,7 @@ const LINE_COLORS: Record<string, string> = {
   Temp_Eesruum: '#1565c0',     // Eesruum — dark blue
   Temp_valjas: '#d4a76a',      // Õues — sand
   Temp_Leiliruum: '#00838f',   // Leiliruum — dark cyan
-  Temp_kasvuhoone: '#2e7d32',  // Kasvuhoone — green
+  Temp_kasvuhoone: '#2e7d32',  // Magamistuba (kasvuhoone DHT22) — green
   Temp_elutuba: '#ef6c00',     // Elutuba — orange
 };
 
