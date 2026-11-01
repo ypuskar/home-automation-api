@@ -14,7 +14,7 @@ export const ROOM_NAMES: Record<string, string> = {
   '28-0417c2a85dff': 'Eesruum',
   '28-0417c28ee3ff': 'Õues',
   '28-0417c2da95ff': 'Leiliruum',
-  'dht22-kasvuhoone': 'Kasvuhoone',
+  'dht22-kasvuhoone': 'Magamistuba', // kasvuhoone DHT22, winter 2026-11-01 → 2nd floor bedroom
   'dht22-elutuba': 'Elutuba',
 };
 

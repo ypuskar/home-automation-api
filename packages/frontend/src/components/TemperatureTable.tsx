@@ -19,7 +19,7 @@ const SENSOR_ORDER = [
   '28-0417c2a85dff', // Eesruum
   '28-0417c28ee3ff', // Õues
   '28-0417c2da95ff', // Leiliruum
-  'dht22-kasvuhoone', // Kasvuhoone
+  'dht22-kasvuhoone', // Magamistuba (kasvuhoone DHT22)
   'dht22-elutuba', // Elutuba
 ];
 
@@ -29,7 +29,7 @@ const ROOM_COLORS: Record<string, string> = {
   '28-0417c2a85dff': '#1565c0', // Eesruum — dark blue
   '28-0417c28ee3ff': '#d4a76a', // Õues — sand
   '28-0417c2da95ff': '#00838f', // Leiliruum — dark cyan
-  'dht22-kasvuhoone': '#2e7d32', // Kasvuhoone — green
+  'dht22-kasvuhoone': '#2e7d32', // Magamistuba (kasvuhoone DHT22) — green
   'dht22-elutuba': '#ef6c00', // Elutuba — orange
 };
 
